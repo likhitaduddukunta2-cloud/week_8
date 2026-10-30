@@ -1,0 +1,89 @@
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.geometry.Pos;
+import javafx.stage.Stage;
+
+public class Main extends Application {
+
+    public void start(Stage primaryStage) {
+
+        Label title = new Label("Tip Calculator");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+
+        Label billLabel = new Label("Bill Amount:");
+        TextField billField = new TextField();
+        billField.setPromptText("Enter bill amount");
+
+        Label tipLabel = new Label("Tip Percentage:");
+        TextField tipField = new TextField();
+        tipField.setPromptText("Enter tip percentage");
+
+        Label resultLabel = new Label();
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        Button calculateButton = new Button("Calculate Tip");
+        Button resetButton = new Button("Reset");
+
+        calculateButton.setOnAction(e -> {
+            try {
+                double bill = Double.parseDouble(billField.getText());
+                double percentage = Double.parseDouble(tipField.getText());
+
+                if (bill < 0 || percentage < 0) {
+                    errorLabel.setText("Error: Enter positive values.");
+                    resultLabel.setText("");
+                } else {
+                    double tip = (bill * percentage) / 100;
+                    resultLabel.setText(
+                        String.format("Tip Amount: $%.2f", tip)
+                    );
+                    errorLabel.setText("");
+                }
+
+            } catch (NumberFormatException ex) {
+                errorLabel.setText(
+                    "Error: Invalid input. Please enter numbers."
+                );
+                resultLabel.setText("");
+            }
+        });
+
+        resetButton.setOnAction(e -> {
+            billField.clear();
+            tipField.clear();
+            resultLabel.setText("");
+            errorLabel.setText("");
+        });
+
+        HBox buttons = new HBox(10, calculateButton, resetButton);
+        buttons.setAlignment(Pos.CENTER);
+
+        VBox root = new VBox(10,
+            title,
+            billLabel,
+            billField,
+            tipLabel,
+            tipField,
+            buttons,
+            resultLabel,
+            errorLabel
+        );
+
+        root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-padding: 20;");
+
+        Scene scene = new Scene(root, 400, 350);
+
+        primaryStage.setTitle("Tip Calculator");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
